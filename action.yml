@@ -1,0 +1,13 @@
+name: 'Backend-Action'
+description: 'Provide a description here'
+author: 'strairecloud'
+inputs:
+  func:
+    required: true
+    description: What function to do run
+  packages_token:
+    required: true
+    description: Github packages token
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

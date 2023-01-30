@@ -1,0 +1,27 @@
+name: Update backend chart
+on:
+  workflow_call:
+    secrets:
+      packages_token:
+        required: true
+
+jobs:
+  update-chart:
+    name: Update chart
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'strairecloud-api' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.7.0
+
+      - uses: strairecloud/SharedCI@master
+        name: Update chart
+        id: update_charts
+        with:
+            func: update_charts
+            packages_token: ${{ secrets.packages_token }}
