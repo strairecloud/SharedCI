@@ -26,24 +26,22 @@ jobs:
           username: strairecloud-api
           password: ${{ secrets.packages_token }}
 
-      - id: get_tag
-        name: Get docker tag
-        run: |
-          ShortHash=$(git rev-parse --short HEAD)
-          
-          Tag="ghcr.io/${{ github.repository }}"
-          echo "::set-output name=docker_tag_latest::$Tag:latest"
-          echo "::set-output name=docker_tag_versioned::$Tag:$ShortHash"
-          
+      - name: Get docker tag
+        id: get_tag
+        uses: strairecloud/SharedCI@master
+        with:
+          func: get_image_tag
+          packages_token: ${{ secrets.packages_token }}
+
       - name: Build and push image
         uses: docker/build-push-action@v2
         with:
           push: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
-          tags: ${{ steps.get_tag.outputs.docker_tag_latest }},${{ steps.get_tag.outputs.docker_tag_versioned }}
+          tags: ${{ steps.get_tag.outputs.image_tag_latest }},${{ steps.get_tag.outputs.image_tag_versioned }}
           build-args: |
             NODE_ENV=production
             GIT_COMMIT=${{ github.sha }}
-            ${{ github.repository == 'strairecloud/webclient' && 'WEBCLIENT_API_URL=https://api.strairecloud.com' }}
+            ${{ github.repository == 'strairecloud/WebClient' && 'WEBCLIENT_API_URL=https://api.strairecloud.com' }}
           secrets: |
             github_packages_token=${{ secrets.packages_token }}
 
