@@ -40,7 +40,7 @@ jobs:
           tags: ${{ steps.get_tag.outputs.image_tag_latest }},${{ steps.get_tag.outputs.image_tag_versioned }}
           build-args: |
             NODE_ENV=production
-            GIT_COMMIT=${{ github.sha }}
+            GITHUB_SHA=${{ github.sha }}
             ${{ github.repository == 'strairecloud/WebClient' && 'WEBCLIENT_API_URL=https://api.strairecloud.com' }}
           secrets: |
             github_packages_token=${{ secrets.packages_token }}
